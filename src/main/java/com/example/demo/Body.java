@@ -22,7 +22,9 @@ class Body {
 
     public Body(int r, double m, double[] position, Color c, double[] initialVelocity) {
         this(r, m, position, c);
-        this.velocity = initialVelocity.clone();
+        //this.velocity = initialVelocity.clone();
+        this.velocity[0] = Units.distUnitsToSimUnits(initialVelocity[0]);
+        this.velocity[1] = Units.distUnitsToSimUnits(initialVelocity[1]);
     }
 
     public static void updateTransform(ArrayList<Body> planets, double deltaTime) {
@@ -34,13 +36,13 @@ class Body {
                 if (i == j) continue;
                 Body otherPlanet = planets.get(j);
 
-                double dx = otherPlanet.transform[0] - thisPlanet.transform[0];
-                double dy = otherPlanet.transform[1] - thisPlanet.transform[1];
+                double dx = Units.simUnitsToDistUnits(otherPlanet.transform[0] - thisPlanet.transform[0]);
+                double dy = Units.simUnitsToDistUnits(otherPlanet.transform[1] - thisPlanet.transform[1]);
                 double distance = Math.sqrt(dx * dx + dy * dy);
 
                 if (distance == 0) continue; // Avoid singularity
 
-                double gForce = (6.67e-11 * otherPlanet.mass * thisPlanet.mass) / (distance * distance);
+                double gForce = (Units.G * otherPlanet.mass * thisPlanet.mass) / (distance * distance);
                 double angle = Math.atan2(dy, dx);
 
                 thisPlanet.forceG = gForce;
@@ -54,8 +56,8 @@ class Body {
             thisPlanet.acceleration[1] = force[1] / thisPlanet.mass;
 
             // Update velocity
-            thisPlanet.velocity[0] += thisPlanet.acceleration[0] * deltaTime;
-            thisPlanet.velocity[1] += thisPlanet.acceleration[1] * deltaTime;
+            thisPlanet.velocity[0] += Units.distUnitsToSimUnits(thisPlanet.acceleration[0]) * deltaTime;
+            thisPlanet.velocity[1] += Units.distUnitsToSimUnits(thisPlanet.acceleration[1]) * deltaTime;
 
             // Update position
             thisPlanet.transform[0] += thisPlanet.velocity[0] * deltaTime;

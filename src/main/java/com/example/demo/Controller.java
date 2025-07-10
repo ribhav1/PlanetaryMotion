@@ -3,15 +3,12 @@ package com.example.demo;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 
-import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.layout.Pane;
-import javafx.scene.transform.Scale;
 
 
 import java.util.ArrayList;
@@ -24,6 +21,9 @@ public class Controller {
     @FXML private TextField newPlanetRadius;
     @FXML private Button addPlanetButton;
     @FXML private Label errorText;
+    @FXML private Button dayTimeRatioButton;
+    @FXML private Button monthTimeRatioButton;
+    @FXML private Button yearTimeRatioButton;
 
     private double newPlanetMassValue;
     private double newPlanetRadiusValue;
@@ -32,9 +32,10 @@ public class Controller {
     private GraphicsContext gc;
 
     private ArrayList<Body> planets = new ArrayList<>();
-    private static final double SCALE = 50; // Scale factor for visualization
-    private static final double TIME_STEP = 0.01; // Simulation step in seconds
-    private static double timelapse = 2.5;
+    private static final double PIXELS_PER_UNIT = 250; // Scale factor for visualization
+    //private static final double TIME_STEP = 0.01; // Simulation step in seconds
+    private static double timelapse = TimeUnits.SECONDS_PER_MONTH;
+    private static double sliderTimelapse = 1;
 
     private double initialCenterX;
     private double initialCenterY;
@@ -59,19 +60,23 @@ public class Controller {
             if (inPlaceMode)
             {
                 //convert screen/pixel space coords to simulation coords
-                double simX = (cursorX - initialCenterX) / SCALE;
-                double simY = (cursorY - initialCenterY) / SCALE;
+                double simX = (cursorX - initialCenterX) / PIXELS_PER_UNIT;
+                double simY = (cursorY - initialCenterY) / PIXELS_PER_UNIT;
 
-                planets.add(new Body((int)newPlanetRadiusValue, newPlanetMassValue, new double[]{simX, simY}, Color.BLACK, new double[]{0.0, 0.0}));
+                System.out.println(newPlanetMassValue);
+                planets.add(new Body((int)newPlanetRadiusValue, newPlanetMassValue, new double[]{simX, simY}, Color.BLACK));
                 addPlanetButton.setText("Place");
                 inPlaceMode = false;
             }
         });
 
+        dayTimeRatioButton.setOnAction(event -> handleTimeLapseButtonClick("day"));
+        monthTimeRatioButton.setOnAction(event -> handleTimeLapseButtonClick("month"));
+        yearTimeRatioButton.setOnAction(event -> handleTimeLapseButtonClick("year"));
 
-        timelapseSlider.valueProperty().set(2.5);
+        timelapseSlider.valueProperty().set(1);
         timelapseSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            timelapse = newValue.doubleValue();
+            sliderTimelapse = newValue.doubleValue();
         });
 
         setupPlanets();
@@ -87,10 +92,11 @@ public class Controller {
         if (paused) {
             pauseButton.setText("Resume");
             System.out.println("Simulation paused.");
-
+            pauseButton.styleProperty().set("-fx-background-color: green");
         } else {
             pauseButton.setText("Pause");
             System.out.println("Simulation resumed.");
+            pauseButton.styleProperty().set("-fx-background-color: red");
         }
     }
 
@@ -111,22 +117,40 @@ public class Controller {
             errorText.setTextFill(Color.RED);
             errorText.setVisible(true);
         }
+    }
 
-        //planets.add(new Body(Integer.parseInt(newPlanetRadius.getText()), Double.parseDouble(newPlanetMass.getText()), new double[]{0, 0}, Color.RED, new double[]{0.0, 2.0}));
+    @FXML
+    private void handleTimeLapseButtonClick(String timeRatio) {
+        switch (timeRatio) {
+            case "day":
+                timelapse = TimeUnits.SECONDS_PER_DAY;
+                break;
+            case "month":
+                timelapse = TimeUnits.SECONDS_PER_MONTH;
+                break;
+            case "year":
+                timelapse = TimeUnits.SECONDS_PER_YEAR;
+                break;
+        }
     }
 
     private void setupPlanets() {
-        // BLACK HOLES COLLIDING
-        planets.add(new Body(15, 1e12, new double[]{-3.0, -3.0}, Color.BLACK, new double[]{0.0, 2.0}));
-        planets.add(new Body(15, 1e12, new double[]{3.0, 3.0}, Color.BLACK, new double[]{0.0, -2.0}));
-
 
         /*
-        // SOLAR SYSTEM ESQUE ORBIT
-        planets.add(new Body(15, 1e12, new double[]{0.0, 0.0}, Color.RED, new double[]{0.5, 0.0}));
-        planets.add(new Body(10, 1e10, new double[]{-5.5, 2.0}, Color.GREEN, new double[]{0.0, -2.5}));
-        planets.add(new Body(5, 1e9, new double[]{3.5, 0.0}, Color.BLUE, new double[]{0.0, -4.5}));
+        // BLACK HOLES COLLIDING
+        planets.add(new Body(15, 1e45, new double[]{-1.0, -1.0}, Color.BLACK, new double[]{0.0, 2.0}));
+        planets.add(new Body(15, 1e45, new double[]{1.0, 1.0}, Color.BLACK, new double[]{0.0, -2.0}));
         */
+
+        double sunMass = 1.989e30;
+        double earthMass = 5.972e24;
+        //double earthDist = Units.distUnitsToSimUnits(1.496e11); // 1 AU
+        double earthVel = 29780;
+
+
+        planets.add(new Body(50, sunMass, new double[]{0.0, 0.0}, Color.ORANGE));
+        planets.add(new Body(10, earthMass, new double[]{1, 0.0}, Color.BLUE, new double[]{0.0, 29780}));
+
     }
 
     private void startSimulation() {
@@ -146,7 +170,7 @@ public class Controller {
 
     private void updatePhysics(double deltaTime) {
         if(!paused) {
-            Body.updateTransform(planets, deltaTime * timelapse);
+            Body.updateTransform(planets, deltaTime * timelapse * sliderTimelapse);
         }
     }
 
@@ -161,17 +185,17 @@ public class Controller {
         }
 
         for (Body planet : planets) {
-            double x = initialCenterX + planet.transform[0] * SCALE;
-            double y = initialCenterY + planet.transform[1] * SCALE;
+            double x = initialCenterX + planet.transform[0] * PIXELS_PER_UNIT;
+            double y = initialCenterY + planet.transform[1] * PIXELS_PER_UNIT;
 
-            gc.fillText((Math.round(planet.transform[0] * 100.0) / 100.0 + ", " + (Math.round(planet.transform[1]*100.0)/100.0)), x + 0.25 *SCALE, y - 0.25 *SCALE);
+            gc.fillText((Math.round(planet.transform[0] * 100.0) / 100.0 + ", " + (Math.round(planet.transform[1]*100.0)/100.0)), x + 0.25 * PIXELS_PER_UNIT, y - 0.25 * PIXELS_PER_UNIT);
 
             gc.setFill(planet.color);
             gc.fillOval(x - planet.radius, y - planet.radius, planet.radius * 2, planet.radius * 2);
         }
 
         if (inPlaceMode) {
-            gc.fillText((cursorX - initialCenterX)/SCALE + ", " + (cursorY - initialCenterY)/SCALE, cursorX, cursorY);
+            gc.fillText((cursorX - initialCenterX)/ PIXELS_PER_UNIT + ", " + (cursorY - initialCenterY)/ PIXELS_PER_UNIT, cursorX, cursorY);
             gc.fillOval(cursorX - newPlanetRadiusValue, cursorY - newPlanetRadiusValue, newPlanetRadiusValue * 2, newPlanetRadiusValue * 2);
         }
     }

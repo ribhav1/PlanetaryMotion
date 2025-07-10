@@ -13,10 +13,17 @@
     <!-- Right UI Panel -->
     <VBox spacing="10" style="-fx-padding: 15; -fx-background-color: #f0f0f0;" maxWidth="250">
         <Label text="Simulation Controls" style="-fx-font-weight: bold;" />
-        <Button fx:id="pauseButton" text="Start" onAction="#handlePauseResumeClick"/>
+        <Button fx:id="pauseButton" text="Start" style="-fx-background-color: green" onAction="#handlePauseResumeClick"/>
         <Button text="Reset" />
         <Label text="Timelapse" style="-fx-font-weight: bold;" />
-        <Slider fx:id="timelapseSlider" showTickMarks="true" showTickLabels="true" max="5" majorTickUnit="1" minorTickCount="1" />
+        <Label text="Ratio" />
+        <HBox>
+            <Button fx:id="dayTimeRatioButton" text="Day/s"/>
+            <Button fx:id="monthTimeRatioButton" text="Month/s"/>
+            <Button fx:id="yearTimeRatioButton" text="Year/s"/>
+        </HBox>
+        <Label text="Multiplier" />
+        <Slider fx:id="timelapseSlider" showTickMarks="true" showTickLabels="true" min="0.1" max="5" majorTickUnit="1" minorTickCount="1" />
         <Label text="Add Planet" style="-fx-font-weight: bold;" />
         <Label text="Mass"/>
         <TextField fx:id="newPlanetMass" />
