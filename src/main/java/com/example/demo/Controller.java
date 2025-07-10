@@ -3,24 +3,30 @@ package com.example.demo;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 
+import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.layout.Pane;
-
+import javafx.scene.transform.Scale;
 
 
 import java.util.ArrayList;
 
 public class Controller {
-    @FXML
-    private Pane canvasContainer; // Parent container for Canvas
-    @FXML
-    private Button pauseButton;
+    @FXML private Pane canvasContainer; // Parent container for Canvas
+    @FXML private Button pauseButton;
+    @FXML private Slider timelapseSlider;
+    @FXML private TextField newPlanetMass;
+    @FXML private TextField newPlanetRadius;
+    @FXML private Button addPlanetButton;
+    @FXML private Label errorText;
 
-    @FXML Slider timelapseSlider;
+    private double newPlanetMassValue;
+    private double newPlanetRadiusValue;
 
     private Canvas canvas;
     private GraphicsContext gc;
@@ -34,6 +40,9 @@ public class Controller {
     private double initialCenterY;
     private boolean firstDraw = true;
 
+    public double cursorX;
+    public double cursorY;
+
     @FXML
     public void initialize() {
         canvas = new Canvas(400, 400);
@@ -42,6 +51,23 @@ public class Controller {
 
         canvas.widthProperty().bind(canvasContainer.widthProperty());
         canvas.heightProperty().bind(canvasContainer.heightProperty());
+        canvas.setOnMouseMoved((MouseEvent event) -> {
+            cursorX = event.getX();
+            cursorY = event.getY();
+        });
+        canvas.setOnMouseClicked((MouseEvent event) -> {
+            if (inPlaceMode)
+            {
+                //convert screen/pixel space coords to simulation coords
+                double simX = (cursorX - initialCenterX) / SCALE;
+                double simY = (cursorY - initialCenterY) / SCALE;
+
+                planets.add(new Body((int)newPlanetRadiusValue, newPlanetMassValue, new double[]{simX, simY}, Color.BLACK, new double[]{0.0, 0.0}));
+                addPlanetButton.setText("Place");
+                inPlaceMode = false;
+            }
+        });
+
 
         timelapseSlider.valueProperty().set(2.5);
         timelapseSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
@@ -67,6 +93,28 @@ public class Controller {
             System.out.println("Simulation resumed.");
         }
     }
+
+    private boolean inPlaceMode = false;
+
+    @FXML
+    private void handleAddPlanetClick() {
+        if (!newPlanetRadius.getText().isEmpty() && !newPlanetMass.getText().isEmpty()) {
+            if (errorText.isVisible()) {
+                errorText.setVisible(false);
+            }
+            newPlanetMassValue = Double.parseDouble(newPlanetMass.getText());
+            newPlanetRadiusValue = Double.parseDouble(newPlanetRadius.getText());
+            addPlanetButton.setText("Update params");
+            inPlaceMode = true;
+        } else {
+            errorText.setText("Please enter parameters");
+            errorText.setTextFill(Color.RED);
+            errorText.setVisible(true);
+        }
+
+        //planets.add(new Body(Integer.parseInt(newPlanetRadius.getText()), Double.parseDouble(newPlanetMass.getText()), new double[]{0, 0}, Color.RED, new double[]{0.0, 2.0}));
+    }
+
     private void setupPlanets() {
         // BLACK HOLES COLLIDING
         planets.add(new Body(15, 1e12, new double[]{-3.0, -3.0}, Color.BLACK, new double[]{0.0, 2.0}));
@@ -116,8 +164,15 @@ public class Controller {
             double x = initialCenterX + planet.transform[0] * SCALE;
             double y = initialCenterY + planet.transform[1] * SCALE;
 
+            gc.fillText((Math.round(planet.transform[0] * 100.0) / 100.0 + ", " + (Math.round(planet.transform[1]*100.0)/100.0)), x + 0.25 *SCALE, y - 0.25 *SCALE);
+
             gc.setFill(planet.color);
             gc.fillOval(x - planet.radius, y - planet.radius, planet.radius * 2, planet.radius * 2);
+        }
+
+        if (inPlaceMode) {
+            gc.fillText((cursorX - initialCenterX)/SCALE + ", " + (cursorY - initialCenterY)/SCALE, cursorX, cursorY);
+            gc.fillOval(cursorX - newPlanetRadiusValue, cursorY - newPlanetRadiusValue, newPlanetRadiusValue * 2, newPlanetRadiusValue * 2);
         }
     }
 }

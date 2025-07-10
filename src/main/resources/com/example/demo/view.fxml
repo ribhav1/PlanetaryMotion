@@ -3,6 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.text.Text?>
 <HBox alignment="CENTER" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.example.demo.Controller">
 
@@ -10,14 +11,20 @@
     <Pane fx:id="canvasContainer" HBox.hgrow="ALWAYS" />
 
     <!-- Right UI Panel -->
-    <VBox spacing="10" style="-fx-padding: 15; -fx-background-color: #f0f0f0;">
+    <VBox spacing="10" style="-fx-padding: 15; -fx-background-color: #f0f0f0;" maxWidth="250">
         <Label text="Simulation Controls" style="-fx-font-weight: bold;" />
         <Button fx:id="pauseButton" text="Start" onAction="#handlePauseResumeClick"/>
         <Button text="Reset" />
         <Label text="Timelapse" style="-fx-font-weight: bold;" />
         <Slider fx:id="timelapseSlider" showTickMarks="true" showTickLabels="true" max="5" majorTickUnit="1" minorTickCount="1" />
-        <Label text="Edit SIm" style="-fx-font-weight: bold;" />
-
+        <Label text="Add Planet" style="-fx-font-weight: bold;" />
+        <Label text="Mass"/>
+        <TextField fx:id="newPlanetMass" />
+        <Label text="Radius"/>
+        <TextField fx:id="newPlanetRadius" />
+        <Label text="Position"/>
+        <Button fx:id="addPlanetButton" text="Place" onAction="#handleAddPlanetClick" />
+        <Label fx:id="errorText" text="Error" visible="false"/>
     </VBox>
 
  </HBox>
