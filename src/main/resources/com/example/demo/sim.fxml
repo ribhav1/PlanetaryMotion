@@ -2,15 +2,17 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.canvas.Canvas?>
 
-<?import javafx.scene.text.Text?>
 <HBox alignment="CENTER" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.example.demo.Controller">
+      fx:controller="com.example.demo.SimController">
 
-    <!-- Left Viewport -->
-    <Pane fx:id="canvasContainer" HBox.hgrow="ALWAYS" />
+    <!-- Left side viewport -->
+    <Pane fx:id="canvasContainer" HBox.hgrow="ALWAYS">
+        <Canvas fx:id="canvas"/>
+    </Pane>
 
-    <!-- Right UI Panel -->
+    <!-- Right side UI panel -->
     <VBox spacing="10" style="-fx-padding: 15; -fx-background-color: #f0f0f0;" maxWidth="250">
         <Label text="Simulation Controls" style="-fx-font-weight: bold;" />
         <Button fx:id="pauseButton" text="Start" style="-fx-background-color: green" onAction="#handlePauseResumeClick"/>

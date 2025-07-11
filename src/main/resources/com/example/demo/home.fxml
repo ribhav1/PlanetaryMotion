@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" >
+    <Text text="Welcome to the Simulator!" style="-fx-font-size: 24;" />
+</StackPane>

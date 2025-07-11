@@ -13,7 +13,7 @@ import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
 
-public class Controller {
+public class SimController {
     @FXML private Pane canvasContainer; // Parent container for Canvas
     @FXML private Button pauseButton;
     @FXML private Slider timelapseSlider;
@@ -28,10 +28,10 @@ public class Controller {
     private double newPlanetMassValue;
     private double newPlanetRadiusValue;
 
-    private Canvas canvas;
+    @FXML private Canvas canvas;
     private GraphicsContext gc;
 
-    private ArrayList<Body> planets = new ArrayList<>();
+    public ArrayList<Body> planets = new ArrayList<>();
     private static final double PIXELS_PER_UNIT = 250; // Scale factor for visualization
     //private static final double TIME_STEP = 0.01; // Simulation step in seconds
     private static double timelapse = TimeUnits.SECONDS_PER_MONTH;
@@ -46,16 +46,18 @@ public class Controller {
 
     @FXML
     public void initialize() {
-        canvas = new Canvas(400, 400);
         gc = canvas.getGraphicsContext2D();
-        canvasContainer.getChildren().add(canvas); // Add canvas to the FXML Pane
 
         canvas.widthProperty().bind(canvasContainer.widthProperty());
         canvas.heightProperty().bind(canvasContainer.heightProperty());
+
+        timelapse = TimeUnits.SECONDS_PER_MONTH;
+
         canvas.setOnMouseMoved((MouseEvent event) -> {
             cursorX = event.getX();
             cursorY = event.getY();
         });
+
         canvas.setOnMouseClicked((MouseEvent event) -> {
             if (inPlaceMode)
             {
@@ -63,9 +65,10 @@ public class Controller {
                 double simX = (cursorX - initialCenterX) / PIXELS_PER_UNIT;
                 double simY = (cursorY - initialCenterY) / PIXELS_PER_UNIT;
 
-                System.out.println(newPlanetMassValue);
                 planets.add(new Body((int)newPlanetRadiusValue, newPlanetMassValue, new double[]{simX, simY}, Color.BLACK));
                 addPlanetButton.setText("Place");
+                pauseButton.setDisable(false);
+                paused  = prePlacePause;
                 inPlaceMode = false;
             }
         });
@@ -84,6 +87,7 @@ public class Controller {
     }
 
     private boolean paused = true;
+    private boolean prePlacePause = paused;
 
     @FXML
     private void handlePauseResumeClick() {
@@ -112,6 +116,9 @@ public class Controller {
             newPlanetRadiusValue = Double.parseDouble(newPlanetRadius.getText());
             addPlanetButton.setText("Update params");
             inPlaceMode = true;
+            prePlacePause = paused;
+            paused = true;
+            pauseButton.setDisable(true);
         } else {
             errorText.setText("Please enter parameters");
             errorText.setTextFill(Color.RED);
@@ -135,22 +142,11 @@ public class Controller {
     }
 
     private void setupPlanets() {
-
         /*
         // BLACK HOLES COLLIDING
         planets.add(new Body(15, 1e45, new double[]{-1.0, -1.0}, Color.BLACK, new double[]{0.0, 2.0}));
         planets.add(new Body(15, 1e45, new double[]{1.0, 1.0}, Color.BLACK, new double[]{0.0, -2.0}));
         */
-
-        double sunMass = 1.989e30;
-        double earthMass = 5.972e24;
-        //double earthDist = Units.distUnitsToSimUnits(1.496e11); // 1 AU
-        double earthVel = 29780;
-
-
-        planets.add(new Body(50, sunMass, new double[]{0.0, 0.0}, Color.ORANGE));
-        planets.add(new Body(10, earthMass, new double[]{1, 0.0}, Color.BLUE, new double[]{0.0, 29780}));
-
     }
 
     private void startSimulation() {
@@ -174,20 +170,24 @@ public class Controller {
         }
     }
 
-
     private void drawPlanets() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-        if (firstDraw) {
-            initialCenterX = canvas.getWidth() / 2;
-            initialCenterY = canvas.getHeight() / 2;
-            firstDraw = false; // Only set this once
+        if (canvas.getWidth() > 0 && canvas.getHeight() > 0) {
+            if (firstDraw) {
+                initialCenterX = canvas.getWidth() / 2;
+                initialCenterY = canvas.getHeight() / 2;
+                firstDraw = false;
+            }
+        } else {
+            return;
         }
 
         for (Body planet : planets) {
             double x = initialCenterX + planet.transform[0] * PIXELS_PER_UNIT;
             double y = initialCenterY + planet.transform[1] * PIXELS_PER_UNIT;
 
+            gc.setFill(Color.BLACK);
             gc.fillText((Math.round(planet.transform[0] * 100.0) / 100.0 + ", " + (Math.round(planet.transform[1]*100.0)/100.0)), x + 0.25 * PIXELS_PER_UNIT, y - 0.25 * PIXELS_PER_UNIT);
 
             gc.setFill(planet.color);
@@ -195,6 +195,7 @@ public class Controller {
         }
 
         if (inPlaceMode) {
+            gc.setFill(Color.BLACK);
             gc.fillText((cursorX - initialCenterX)/ PIXELS_PER_UNIT + ", " + (cursorY - initialCenterY)/ PIXELS_PER_UNIT, cursorX, cursorY);
             gc.fillOval(cursorX - newPlanetRadiusValue, cursorY - newPlanetRadiusValue, newPlanetRadiusValue * 2, newPlanetRadiusValue * 2);
         }

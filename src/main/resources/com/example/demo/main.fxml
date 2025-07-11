@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.demo.MainController">
+    <top>
+        <MenuBar>
+            <Menu text="File">
+                <MenuItem text="Welcome Screen" onAction="#handleShowHome"/>
+                <SeparatorMenuItem/>
+                <MenuItem text="Exit" onAction="#handleExit"/>
+            </Menu>
+            <Menu text="Simulator">
+                <MenuItem text="New Blank" onAction="#handleShowBlank"/>
+                <MenuItem text="Open Demo" onAction="#handleShowDemo"/>
+                <MenuItem text="Load sim" onAction="#handleLoadSimulation"/>
+            </Menu>
+            <Menu text="Help">
+                <MenuItem text="About" onAction="#handleAbout"/>
+            </Menu>
+        </MenuBar>
+    </top>
+
+    <center>
+        <StackPane  fx:id="contentArea" />
+    </center>
+</BorderPane>
