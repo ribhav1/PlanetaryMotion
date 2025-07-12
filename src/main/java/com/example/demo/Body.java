@@ -2,6 +2,7 @@ package com.example.demo;
 
 import javafx.scene.paint.Color;
 import java.util.ArrayList;
+import java.util.UUID;
 
 class Body {
     int radius;
@@ -10,6 +11,8 @@ class Body {
     double[] velocity = {0.0, 0.0};
     double[] acceleration = {0.0, 0.0};
     Color color;
+    double creationTime = 0.0;
+    String uniqueID = UUID.randomUUID().toString();
 
     double forceG = 0;
 

@@ -35,6 +35,7 @@
         <TextField fx:id="initVelocity" disable="true" />
         <Button fx:id="addPlanetButton" text="Place" onAction="#handleAddPlanetClick" />
         <Label fx:id="errorText" text="Error" visible="false"/>
+        <Button fx:id="reverseButton" text="Reverse" onAction="#handleReverseClick" />
     </VBox>
 
  </HBox>

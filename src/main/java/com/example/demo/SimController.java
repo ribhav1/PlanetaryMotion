@@ -11,9 +11,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class SimController {
-    @FXML private Pane canvasContainer; // Parent container for Canvas
+    @FXML private Pane canvasContainer; // parent container for Canvas
     @FXML private Button pauseButton;
     @FXML private Slider timelapseSlider;
     @FXML private TextField newPlanetMass;
@@ -36,8 +41,9 @@ public class SimController {
     private Body newPlanet;
     private static final double PIXELS_PER_UNIT = 250; // Scale factor for visualization
     //private static final double TIME_STEP = 0.01; // Simulation step in seconds
-    private static double timelapse = TimeUnits.SECONDS_PER_MONTH;
-    private static double sliderTimelapse = 1;
+    private double timelapse = TimeUnits.SECONDS_PER_MONTH;
+    private double sliderTimelapse = 1;
+    private double reverse = 1;
 
     private double initialCenterX;
     private double initialCenterY;
@@ -86,7 +92,9 @@ public class SimController {
                     double arrowAngle = arrowInfo[2];
                     double[] initV = new double[]{ Double.parseDouble(initVelocity.getText()) * Math.cos(arrowAngle), Double.parseDouble(initVelocity.getText()) * Math.sin(arrowAngle)};
 
-                    planets.add(new Body(newPlanet.radius, newPlanet.mass, newPlanet.transform, newPlanet.color, initV));
+                    Body b = new Body(newPlanet.radius, newPlanet.mass, newPlanet.transform, newPlanet.color, initV);
+                    b.creationTime = simulationTime;
+                    planets.add(b);
 
                     pauseButton.setDisable(false);
                     addPlanetButton.setDisable(false);
@@ -160,6 +168,8 @@ public class SimController {
 
         inPlaceMode = false;
         inArrowMode = false;
+
+        reverse = 1;
 
         paused = true;
         prePlacePause = paused;
@@ -239,6 +249,25 @@ public class SimController {
         */
     }
 
+    private double simulationTime = 0;
+    private double totalTimeElapsedReversed = 0;
+    private double lastReverseStartedAt = 0;
+    private double TIME_TOLERANCE = 0.005;
+
+    // formula: if total time since event = total prev elapsed time * 2 + current elapsed time, then we have reached that event in rewind
+
+    @FXML
+    private void handleReverseClick() {
+        reverse = -1 * reverse;
+        if (reverse == -1) {
+            lastReverseStartedAt = simulationTime;
+        } else {
+            totalTimeElapsedReversed += simulationTime - lastReverseStartedAt;
+        }
+    }
+
+    private List<Body> removedPlanets = new ArrayList<>();
+
     private void startSimulation() {
         new AnimationTimer() {
             private long lastTime = System.nanoTime();
@@ -248,6 +277,39 @@ public class SimController {
                 double deltaTime = (now - lastTime) / 1e9; // Convert to seconds
                 lastTime = now;
 
+                if (!paused) {
+                    simulationTime += deltaTime* sliderTimelapse * reverse;
+                }
+
+/*                if (Math.abs(simulationTime - 0) < TIME_TOLERANCE && !firstDraw)
+                {
+                    handleResetClick();
+                }*/
+
+                if (reverse == -1) {
+                    if (!planets.isEmpty()) {
+                        List planetsToRemove = new ArrayList();
+                        for (Body planet : planets)
+                        {
+                            if (Math.abs(simulationTime - planet.creationTime) < TIME_TOLERANCE) {
+                                planetsToRemove.add(planet);
+                                if (!initPlanets.contains(planet)) {
+                                    removedPlanets.add(planet);
+                                }
+                            }
+                        }
+                        planets.removeAll(planetsToRemove);
+                    }
+
+                } else if (reverse == 1) {
+                    for (Body planet : removedPlanets)
+                    {
+                        if (Math.abs(simulationTime - planet.creationTime) < TIME_TOLERANCE) {
+                            planets.add(planet);
+                        }
+                    }
+                }
+
                 updatePhysics(deltaTime);
                 drawPlanets();
             }
@@ -256,7 +318,7 @@ public class SimController {
 
     private void updatePhysics(double deltaTime) {
         if(!paused) {
-            Body.updateTransform(planets, deltaTime * timelapse * sliderTimelapse);
+            Body.updateTransform(planets, deltaTime * timelapse * sliderTimelapse * reverse);
         }
     }
 
