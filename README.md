@@ -125,10 +125,6 @@ radius,mass,pos_x,pos_y,color,vel_x,vel_y
 ## 🧩 Potential Extensions
 
 - ⏯ Playback timeline / orbit trails
-- 🧭 Multi-system support (moons, binary stars)
-- 🌐 Export simulation states
-- 🧪 General Relativity approximation
-- 💾 Save/load simulation state (JSON/YAML)
 
 ---
 
