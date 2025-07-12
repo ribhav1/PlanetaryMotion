@@ -24,7 +24,7 @@ This simulator provides a real-time physics engine for gravitational interaction
 
 ## 📦 Features
 
-- ✅ **Newtonian Gravity Engine** – simulates force interactions using \( F = G \frac{m_1 m_2}{r^2} \)
+- ✅ **Newtonian Gravity Engine** – simulates force interactions using ![gravity equation](https://latex.codecogs.com/png.image?\dpi{120}F=G\frac{m_1m_2}{r^2})
 - 🎨 **JavaFX UI** – responsive layout with interactive canvas
 - 🛠️ **Dynamic Planet Creation** – add planets during simulation with user-defined attributes
 - ⏱️ **Time Control** – toggle between day/month/year time scales, and control simulation speed
