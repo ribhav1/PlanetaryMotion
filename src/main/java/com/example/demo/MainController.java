@@ -47,8 +47,8 @@ public class MainController {
             //double earthDist = Units.distUnitsToSimUnits(1.496e11); // 1 AU
             double earthVel = 29780;
 
-            simController.planets.add(new Body(50, sunMass, new double[]{0.0, 0.0}, Color.ORANGE));
-            simController.planets.add(new Body(10, earthMass, new double[]{1.0, 0.0}, Color.BLUE, new double[]{0.0, 29780}));
+            simController.initPlanets.add(new Body(50, sunMass, new double[]{0.0, 0.0}, Color.ORANGE));
+            simController.initPlanets.add(new Body(10, earthMass, new double[]{1.0, 0.0}, Color.BLUE, new double[]{0.0, 29780}));
 
             contentArea.getChildren().setAll(screen);
 
@@ -106,7 +106,7 @@ public class MainController {
 
             SimController simController = loader.getController();
             for (List<String> planet : planetData) {
-                simController.planets.add(new Body(
+                simController.initPlanets.add(new Body(
                         Integer.parseInt(planet.get(0)),
                         Double.parseDouble(planet.get(1)),
                         new double[]{ Double.parseDouble(planet.get(2)), Double.parseDouble(planet.get(3))},

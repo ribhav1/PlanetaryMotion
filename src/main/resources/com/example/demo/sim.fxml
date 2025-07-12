@@ -16,7 +16,7 @@
     <VBox spacing="10" style="-fx-padding: 15; -fx-background-color: #f0f0f0;" maxWidth="250">
         <Label text="Simulation Controls" style="-fx-font-weight: bold;" />
         <Button fx:id="pauseButton" text="Start" style="-fx-background-color: green" onAction="#handlePauseResumeClick"/>
-        <Button text="Reset" />
+        <Button text="Reset" onAction="#handleResetClick" />
         <Label text="Timelapse" style="-fx-font-weight: bold;" />
         <Label text="Ratio" />
         <HBox>
@@ -31,7 +31,8 @@
         <TextField fx:id="newPlanetMass" />
         <Label text="Radius"/>
         <TextField fx:id="newPlanetRadius" />
-        <Label text="Position"/>
+        <Label text="Velocity" />
+        <TextField fx:id="initVelocity" disable="true" />
         <Button fx:id="addPlanetButton" text="Place" onAction="#handleAddPlanetClick" />
         <Label fx:id="errorText" text="Error" visible="false"/>
     </VBox>
