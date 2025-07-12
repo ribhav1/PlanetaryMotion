@@ -112,7 +112,7 @@ radius,mass,pos_x,pos_y,color,vel_x,vel_y
 
 ## 🧠 Physics & Units
 
-- **Gravity Formula:** \( F = G \frac{m_1 m_2}{r^2} \)
+- **Gravity Formula:** ![gravity equation](https://latex.codecogs.com/png.image?\dpi{120}F=G\frac{m_1m_2}{r^2})
 - **Distance Units:** Astronomical Units (AU) → 1 AU = `1.496e11` meters
 - **Velocity Units:** User-input in m/s, internally converted to scaled sim units
 - **Time Units:**
