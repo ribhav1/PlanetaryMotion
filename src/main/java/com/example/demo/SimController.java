@@ -13,10 +13,6 @@ import javafx.scene.layout.Pane;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
 public class SimController {
     @FXML private Pane canvasContainer; // parent container for Canvas
     @FXML private Button pauseButton;
@@ -29,6 +25,7 @@ public class SimController {
     @FXML private Button monthTimeRatioButton;
     @FXML private Button yearTimeRatioButton;
     @FXML private TextField initVelocity;
+    @FXML private Button reverseButton;
 
     private double newPlanetMassValue;
     private double newPlanetRadiusValue;
@@ -38,15 +35,16 @@ public class SimController {
 
     public ArrayList<Body> initPlanets = new ArrayList<>();
     private ArrayList<Body> planets = new ArrayList<>();
+    private List<Body> removedPlanets = new ArrayList<>();
     private Body newPlanet;
+
     private static final double PIXELS_PER_UNIT = 250; // Scale factor for visualization
-    //private static final double TIME_STEP = 0.01; // Simulation step in seconds
     private double timelapse = TimeUnits.SECONDS_PER_MONTH;
     private double sliderTimelapse = 1;
     private double reverse = 1;
 
-    private double initialCenterX;
-    private double initialCenterY;
+    private double centerScreenX;
+    private double centerScreenY;
     private boolean firstDraw = true;
 
     public double cursorX;
@@ -72,8 +70,8 @@ public class SimController {
             if (inPlaceMode)
             {
                 //convert screen/pixel space coords to simulation coords
-                double simX = (cursorX - initialCenterX) / PIXELS_PER_UNIT;
-                double simY = (cursorY - initialCenterY) / PIXELS_PER_UNIT;
+                double simX = (cursorX - centerScreenX) / PIXELS_PER_UNIT;
+                double simY = (cursorY - centerScreenY) / PIXELS_PER_UNIT;
 
                 newPlanet = new Body((int)newPlanetRadiusValue, newPlanetMassValue, new double[]{simX, simY}, Color.BLACK);
                 addPlanetButton.setText("Place");
@@ -85,8 +83,8 @@ public class SimController {
             } else if (inArrowMode) {
                 if (!initVelocity.getText().isEmpty()) {
                     // convert simulation coords to screen coords
-                    double bodyX = initialCenterX + newPlanet.transform[0] * PIXELS_PER_UNIT;
-                    double bodyY = initialCenterY + newPlanet.transform[1] * PIXELS_PER_UNIT;
+                    double bodyX = centerScreenX + newPlanet.transform[0] * PIXELS_PER_UNIT;
+                    double bodyY = centerScreenY + newPlanet.transform[1] * PIXELS_PER_UNIT;
 
                     double[] arrowInfo = calculateArrowInfo(bodyX, bodyY);
                     double arrowAngle = arrowInfo[2];
@@ -96,6 +94,7 @@ public class SimController {
                     b.creationTime = simulationTime;
                     planets.add(b);
 
+                    reverseButton.setDisable(false);
                     pauseButton.setDisable(false);
                     addPlanetButton.setDisable(false);
                     initVelocity.setDisable(true);
@@ -129,7 +128,7 @@ public class SimController {
     @FXML
     private void handlePauseResumeClick() {
         paused = !paused;
-
+        reverseButton.setDisable(false);
         if (paused) {
             pauseButton.setText("Resume");
             System.out.println("Simulation paused.");
@@ -170,6 +169,7 @@ public class SimController {
         inArrowMode = false;
 
         reverse = 1;
+        reverseButton.setDisable(true);
 
         paused = true;
         prePlacePause = paused;
@@ -178,7 +178,8 @@ public class SimController {
     private void copyInitPlanets()
     {
         planets.clear();
-        for(int i = 0; i<initPlanets.size(); i++)
+        removedPlanets.clear();
+        for(int i = 0; i < initPlanets.size(); i++)
         {
             // nightmare bug:
             // this is necessary because the velocity of the initPlanet
@@ -214,6 +215,9 @@ public class SimController {
             }
             newPlanetMassValue = Double.parseDouble(newPlanetMass.getText());
             newPlanetRadiusValue = Double.parseDouble(newPlanetRadius.getText());
+
+            reverse = 1;
+            reverseButton.setDisable(true);
             addPlanetButton.setText("Update params");
             inPlaceMode = true;
             prePlacePause = paused;
@@ -252,7 +256,6 @@ public class SimController {
     private double simulationTime = 0;
     private double totalTimeElapsedReversed = 0;
     private double lastReverseStartedAt = 0;
-    private double TIME_TOLERANCE = 0.005;
 
     // formula: if total time since event = total prev elapsed time * 2 + current elapsed time, then we have reached that event in rewind
 
@@ -266,8 +269,6 @@ public class SimController {
         }
     }
 
-    private List<Body> removedPlanets = new ArrayList<>();
-
     private void startSimulation() {
         new AnimationTimer() {
             private long lastTime = System.nanoTime();
@@ -277,20 +278,22 @@ public class SimController {
                 double deltaTime = (now - lastTime) / 1e9; // Convert to seconds
                 lastTime = now;
 
+
+                double TIME_TOLERANCE = 0.01 * timelapse * sliderTimelapse;
                 if (!paused) {
-                    simulationTime += deltaTime* sliderTimelapse * reverse;
+                    simulationTime += deltaTime * timelapse * sliderTimelapse * reverse;
                 }
 
-/*                if (Math.abs(simulationTime - 0) < TIME_TOLERANCE && !firstDraw)
+                if (Math.abs(simulationTime - 0) < TIME_TOLERANCE && reverse == -1)
                 {
                     handleResetClick();
-                }*/
+                    simulationTime = 0;
+                }
 
                 if (reverse == -1) {
                     if (!planets.isEmpty()) {
-                        List planetsToRemove = new ArrayList();
-                        for (Body planet : planets)
-                        {
+                        List<Body> planetsToRemove = new ArrayList<>();
+                        for (Body planet : planets) {
                             if (Math.abs(simulationTime - planet.creationTime) < TIME_TOLERANCE) {
                                 planetsToRemove.add(planet);
                                 if (!initPlanets.contains(planet)) {
@@ -302,12 +305,15 @@ public class SimController {
                     }
 
                 } else if (reverse == 1) {
-                    for (Body planet : removedPlanets)
-                    {
+                    List<Body> restoredPlanets = new ArrayList<>();
+                    for (Body planet : removedPlanets) {
                         if (Math.abs(simulationTime - planet.creationTime) < TIME_TOLERANCE) {
                             planets.add(planet);
+                            restoredPlanets.add(planet);
                         }
                     }
+                    // prevent already restored planets from being restored multiple times
+                    removedPlanets.removeAll(restoredPlanets);
                 }
 
                 updatePhysics(deltaTime);
@@ -329,44 +335,34 @@ public class SimController {
             if (firstDraw) {
                 copyInitPlanets();
 
-                initialCenterX = canvas.getWidth() / 2;
-                initialCenterY = canvas.getHeight() / 2;
+
                 firstDraw = false;
             }
         } else {
             return;
         }
 
+        centerScreenX = canvas.getWidth() / 2;
+        centerScreenY = canvas.getHeight() / 2;
+
         for (Body planet : planets) {
-            double x = initialCenterX + planet.transform[0] * PIXELS_PER_UNIT;
-            double y = initialCenterY + planet.transform[1] * PIXELS_PER_UNIT;
-
-            gc.setFill(Color.BLACK);
-            gc.fillText((Math.round(planet.transform[0] * 100.0) / 100.0 + ", " + (Math.round(planet.transform[1]*100.0)/100.0)), x + 0.25 * PIXELS_PER_UNIT, y - 0.25 * PIXELS_PER_UNIT);
-
-            gc.setFill(planet.color);
-            gc.fillOval(x - planet.radius, y - planet.radius, planet.radius * 2, planet.radius * 2);
+            renderPlanet(new double[]{centerScreenX, centerScreenY}, planet, Color.BLACK);
         }
 
         if (inPlaceMode) {
             gc.setFill(Color.BLACK);
-            gc.fillText((cursorX - initialCenterX)/ PIXELS_PER_UNIT + ", " + (cursorY - initialCenterY)/ PIXELS_PER_UNIT, cursorX + 0.25 * PIXELS_PER_UNIT, cursorY - 0.25 * PIXELS_PER_UNIT);
+            gc.fillText((cursorX - centerScreenX)/ PIXELS_PER_UNIT + ", " + (cursorY - centerScreenY)/ PIXELS_PER_UNIT, cursorX + 0.25 * PIXELS_PER_UNIT, cursorY - 0.25 * PIXELS_PER_UNIT);
             gc.fillOval(cursorX - newPlanetRadiusValue, cursorY - newPlanetRadiusValue, newPlanetRadiusValue * 2, newPlanetRadiusValue * 2);
         }
+
         if (inArrowMode && newPlanet != null) {
 
             // render temp planet while placing arrow for its initial velocity
-            double x = initialCenterX + newPlanet.transform[0] * PIXELS_PER_UNIT;
-            double y = initialCenterY + newPlanet.transform[1] * PIXELS_PER_UNIT;
-
-            gc.setFill(Color.BLACK);
-            gc.fillText((Math.round(newPlanet.transform[0] * 100.0) / 100.0 + ", " + (Math.round(newPlanet.transform[1]*100.0)/100.0)), x + 0.25 * PIXELS_PER_UNIT, y - 0.25 * PIXELS_PER_UNIT);
-            gc.setFill(newPlanet.color);
-            gc.fillOval(x - newPlanet.radius, y - newPlanet.radius, newPlanet.radius * 2, newPlanet.radius * 2);
+            renderPlanet(new double[]{centerScreenX, centerScreenY}, newPlanet, Color.BLACK);
 
             // convert simulation coords to screen coords
-            double bodyX = initialCenterX + newPlanet.transform[0] * PIXELS_PER_UNIT;
-            double bodyY = initialCenterY + newPlanet.transform[1] * PIXELS_PER_UNIT;
+            double bodyX = centerScreenX + newPlanet.transform[0] * PIXELS_PER_UNIT;
+            double bodyY = centerScreenY + newPlanet.transform[1] * PIXELS_PER_UNIT;
 
             double[] arrowInfo = calculateArrowInfo(bodyX, bodyY);
 
@@ -380,6 +376,17 @@ public class SimController {
             gc.strokeLine(bodyX, bodyY, endX, endY);
 
         }
+    }
+
+    private void renderPlanet(double[] position, Body planet, Color textColor) {
+        double x = position[0] + planet.transform[0] * PIXELS_PER_UNIT;
+        double y = position[1] + planet.transform[1] * PIXELS_PER_UNIT;
+
+        gc.setFill(textColor);
+        gc.fillText((Math.round(planet.transform[0] * 100.0) / 100.0 + ", " + (Math.round(planet.transform[1]*100.0)/100.0)), x + 0.25 * PIXELS_PER_UNIT, y - 0.25 * PIXELS_PER_UNIT);
+
+        gc.setFill(planet.color);
+        gc.fillOval(x - planet.radius, y - planet.radius, planet.radius * 2, planet.radius * 2);
     }
 
     private double[] calculateArrowInfo(double bodyX, double bodyY)
