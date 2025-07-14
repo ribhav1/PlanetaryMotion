@@ -1,0 +1,186 @@
+[1mdiff --git a/LICENSE b/LICENSE[m
+[1mdeleted file mode 100644[m
+[1mindex bfca086..0000000[m
+[1m--- a/LICENSE[m
+[1m+++ /dev/null[m
+[36m@@ -1,21 +0,0 @@[m
+[31m-MIT License[m
+[31m-[m
+[31m-Copyright (c) 2025 ribhav1[m
+[31m-[m
+[31m-Permission is hereby granted, free of charge, to any person obtaining a copy[m
+[31m-of this software and associated documentation files (the "Software"), to deal[m
+[31m-in the Software without restriction, including without limitation the rights[m
+[31m-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell[m
+[31m-copies of the Software, and to permit persons to whom the Software is[m
+[31m-furnished to do so, subject to the following conditions:[m
+[31m-[m
+[31m-The above copyright notice and this permission notice shall be included in all[m
+[31m-copies or substantial portions of the Software.[m
+[31m-[m
+[31m-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR[m
+[31m-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,[m
+[31m-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE[m
+[31m-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER[m
+[31m-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,[m
+[31m-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE[m
+[31m-SOFTWARE.[m
+[1mdiff --git a/README.md b/README.md[m
+[1mdeleted file mode 100644[m
+[1mindex 6ed61d9..0000000[m
+[1m--- a/README.md[m
+[1m+++ /dev/null[m
+[36m@@ -1,153 +0,0 @@[m
+[31m-# 🌌 Realtime Gravity Simulation[m
+[31m-[m
+[31m-A visually interactive, real-time 2D gravity simulation written in JavaFX. This application models celestial mechanics using Newtonian physics, enabling users to explore orbital dynamics, planetary motion, and gravitational forces through an intuitive desktop interface.[m
+[31m-[m
+[31m-<p align="center">[m
+[31m-  <img src="https://img.shields.io/badge/Java-17+-brightgreen" />[m
+[31m-  <img src="https://img.shields.io/badge/JavaFX-Supported-blue" />[m
+[31m-  <img src="https://img.shields.io/badge/Platform-Desktop-lightgrey" />[m
+[31m-  <img src="https://img.shields.io/badge/License-MIT-yellow" />[m
+[31m-</p>[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-## 🧠 Overview[m
+[31m-[m
+[31m-This simulator provides a real-time physics engine for gravitational interaction between massive bodies. It supports:[m
+[31m-- Precise time scaling (days/months/years per second)[m
+[31m-- Real-world physics constants and units[m
+[31m-- Interactive planet creation with mass, radius, velocity, and position[m
+[31m-- CSV-based batch loading of planetary systems[m
+[31m-- A modular, extensible JavaFX architecture[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-## 📦 Features[m
+[31m-[m
+[31m-- ✅ **Newtonian Gravity Engine** – simulates force interactions using ![gravity equation](https://latex.codecogs.com/png.image?\dpi{120}F=G\frac{m_1m_2}{r^2})[m
+[31m-- 🎨 **JavaFX UI** – responsive layout with interactive canvas[m
+[31m-- 🛠️ **Dynamic Planet Creation** – add planets during simulation with user-defined attributes[m
+[31m-- ⏱️ **Time Control** – toggle between day/month/year time scales, and control simulation speed[m
+[31m-- 📄 **CSV Import Support** – load custom planetary systems from `.csv` files[m
+[31m-- 🔄 **Pause, Resume, Reset** – control flow of the simulation without restarting the app[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-## 📁 File Structure[m
+[31m-[m
+[31m-```[m
+[31m-src/[m
+[31m-├── com.example.demo/[m
+[31m-│   ├── Application.java          # JavaFX application launcher[m
+[31m-│   ├── Body.java                 # Gravitational body model and physics logic[m
+[31m-│   ├── MainController.java       # Main UI navigation controller[m
+[31m-│   ├── SimController.java        # Simulation logic, canvas rendering, interactivity[m
+[31m-│   ├── TimeUnits.java            # Time scaling constants (day, month, year)[m
+[31m-│   ├── Units.java                # Distance unit conversion and constants[m
+[31m-├── resources/[m
+[31m-│   ├── main.fxml                 # Main layout (menus, navigation)[m
+[31m-│   ├── sim.fxml                  # Simulation layout (canvas and controls)[m
+[31m-│   ├── home.fxml                 # Welcome screen[m
+[31m-```[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-## 🛠️ Installation & Usage[m
+[31m-[m
+[31m-### 📦 Prerequisites[m
+[31m-[m
+[31m-- Java **17+**[m
+[31m-- JavaFX SDK (version compatible with your JDK)[m
+[31m-- IDE with JavaFX support (IntelliJ IDEA recommended)[m
+[31m-[m
+[31m-### ▶️ Run the App[m
+[31m-[m
+[31m-#### Option 1: From IDE[m
+[31m-[m
+[31m-1. Clone the repository:[m
+[31m-   ```bash[m
+[31m-   git clone https://github.com/your-username/realtime-gravity-sim.git[m
+[31m-   cd realtime-gravity-sim[m
+[31m-   ```[m
+[31m-[m
+[31m-2. Open the project in IntelliJ or your preferred IDE.[m
+[31m-3. Configure JavaFX library path (if not bundled).[m
+[31m-4. Run `Application.java`.[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-## 🧪 Simulation Controls[m
+[31m-[m
+[31m-| Feature         | Description |[m
+[31m-|----------------|-------------|[m
+[31m-| `Start/Pause`  | Toggle simulation state |[m
+[31m-| `Reset`        | Restore to initial planet configuration |[m
+[31m-| `Add Planet`   | Define a planet with radius, mass, and velocity, then click on canvas |[m
+[31m-| `Time Scale`   | Choose between Day, Month, or Year as time unit |[m
+[31m-| `Slider`       | Adjust time acceleration multiplier (0.1x to 5x) |[m
+[31m-| `Load CSV`     | Import custom planet configurations |[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-## 📂 CSV File Format[m
+[31m-[m
+[31m-You can load your own planet systems from `.csv` files. Each row represents a body:[m
+[31m-[m
+[31m-```[m
+[31m-radius,mass,pos_x,pos_y,color,vel_x,vel_y[m
+[31m-```[m
+[31m-[m
+[31m-**Example:**[m
+[31m-```[m
+[31m-10,5.972e24,1.0,0.0,Color.BLUE,0.0,29780[m
+[31m-```[m
+[31m-[m
+[31m-- `radius`: in pixels (for visualization)[m
+[31m-- `mass`: in kg[m
+[31m-- `pos_x, pos_y`: relative simulation coordinates (in AU)[m
+[31m-- `color`: JavaFX-compatible color string (e.g., `Color.RED`, `Color.BLUE`)[m
+[31m-- `vel_x, vel_y`: in m/s (converted internally to simulation units)[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-## 🧠 Physics & Units[m
+[31m-[m
+[31m-- **Gravity Formula:** ![gravity equation](https://latex.codecogs.com/png.image?\dpi{120}F=G\frac{m_1m_2}{r^2})[m
+[31m-- **Distance Units:** Astronomical Units (AU) → 1 AU = `1.496e11` meters[m
+[31m-- **Velocity Units:** User-input in m/s, internally converted to scaled sim units[m
+[31m-- **Time Units:**[m
+[31m-  - Day = 86,400 seconds[m
+[31m-  - Month ≈ 2.628e6 seconds[m
+[31m-  - Year ≈ 3.154e7 seconds[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-## 🧩 Potential Extensions[m
+[31m-[m
+[31m-- ⏯ Playback timeline / orbit trails[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-## 🧑‍💻 Contributing[m
+[31m-[m
+[31m-Pull requests are welcome! If you’d like to contribute:[m
+[31m-1. Fork this repository[m
+[31m-2. Create a feature branch (`git checkout -b feature/PlanetTrails`)[m
+[31m-3. Commit your changes (`git commit -m 'Add orbit trails'`)[m
+[31m-4. Push to the branch (`git push origin feature/PlanetTrails`)[m
+[31m-5. Open a Pull Request[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-## 📜 License[m
+[31m-[m
+[31m-This project is licensed under the MIT License.  [m
+[31m-See the [LICENSE](LICENSE) file for details.[m
+[31m-[m
+[31m----[m
+[31m-[m
+[31m-## 🙋‍♂️ Author[m
+[31m-[m
+[31m-Created by [Ribhav Malhotra](https://github.com/your-username)[m
+[31m-[m
+[31m-For questions, feedback, or collaboration ideas, feel free to reach out![m
