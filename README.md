@@ -82,7 +82,7 @@ src/
 |----------------|-------------|
 | `Start/Pause`  | Toggle simulation state |
 | `Reset`        | Restore to initial planet configuration |
-| `Reverse`      | Reverse time in the simulation rewinding in real simulation time |
+| `Reverse`      | Reverse time in the simulation, rewinding in real simulation time |
 | `Add Planet`   | Define a planet with radius, mass, and velocity, then click on canvas |
 | `Time Scale`   | Choose between Day, Month, or Year as time unit |
 | `Slider`       | Adjust time acceleration multiplier (0.1x to 5x) |
