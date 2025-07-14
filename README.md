@@ -29,7 +29,7 @@ This simulator provides a real-time physics engine for gravitational interaction
 - 🛠️ **Dynamic Planet Creation** – add planets during simulation with user-defined attributes
 - ⏱️ **Time Control** – toggle between day/month/year time scales, and control simulation speed
 - 📄 **CSV Import Support** – load custom planetary systems from `.csv` files
-- 🔄 **Pause, Resume, Reset** – control flow of the simulation without restarting the app
+- 🔄 **Pause, Resume, Reset, Reverse** – control flow of the simulation without restarting the app
 
 ---
 
@@ -82,6 +82,7 @@ src/
 |----------------|-------------|
 | `Start/Pause`  | Toggle simulation state |
 | `Reset`        | Restore to initial planet configuration |
+| `Reverse`      | Reverse time in the simulation rewinding in real simulation time |
 | `Add Planet`   | Define a planet with radius, mass, and velocity, then click on canvas |
 | `Time Scale`   | Choose between Day, Month, or Year as time unit |
 | `Slider`       | Adjust time acceleration multiplier (0.1x to 5x) |
@@ -124,7 +125,7 @@ radius,mass,pos_x,pos_y,color,vel_x,vel_y
 
 ## 🧩 Potential Extensions
 
-- ⏯ Playback timeline / orbit trails
+- Orbit trails
 
 ---
 
