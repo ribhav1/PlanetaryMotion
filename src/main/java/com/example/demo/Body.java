@@ -18,6 +18,8 @@ class Body {
     public static double MIN_TRAIL_DIST = 0.01;
     public static int MIN_TRAIL_SIZE = 100;
 
+    String uniqueID = UUID.randomUUID().toString();
+
     double forceG = 0;
 
     public Body(int r, double m, double[] position, Color c) {
