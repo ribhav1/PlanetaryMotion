@@ -1,7 +1,235 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 
-<StackPane xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" >
-    <Text text="Welcome to the Simulator!" style="-fx-font-size: 24;" />
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Rectangle?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.example.demo.HomeController"
+           fx:id="rootPane">
+
+    <!-- animated starfield canvas -->
+    <Canvas fx:id="starCanvas" StackPane.alignment="CENTER" />
+
+    <!-- semi-transparent overlay so canvas shows through -->
+    <Rectangle StackPane.alignment="CENTER" fill="#00000000"/>
+
+    <!-- scrollable landing page -->
+    <ScrollPane fitToWidth="true" pannable="true" style="-fx-background: transparent; -fx-background-color: transparent">
+        <VBox spacing="36" alignment="TOP_CENTER" style="-fx-padding: 48;">
+
+            <!-- title section -->
+            <VBox alignment="CENTER" spacing="14" style="-fx-padding: 6 12 12 12;">
+
+                <Label text="Planetary Motion Simulator"
+                       style="-fx-font-size: 64px; -fx-font-weight: 800; -fx-text-fill: linear-gradient(to right, #7C3AED, #8B5CF6);"
+                       wrapText="true"/>
+                <Label text="A visually interactive, real-time 2D gravity simulation built with JavaFX. Explore celestial mechanics using Newtonian physics through an intuitive desktop interface."
+                       wrapText="true"
+                       textAlignment="CENTER"
+                       maxWidth="600"
+                       style="-fx-font-size: 18px; -fx-text-fill: rgba(228,228,231,0.95);" />
+
+                <HBox alignment="CENTER" spacing="18" style="-fx-padding: 14;">
+                    <Button fx:id="launchButton"
+                            text="Launch Demo Simulation"
+                            onAction="#onLaunch"
+                            onMouseEntered="#onButtonEnter"
+                            onMouseExited="#onButtonExit"
+                            style="-fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #4C1D95 0%, #7C3AED 100%); -fx-text-fill: white; -fx-font-size: 15px; -fx-padding: 12 22; -fx-background-radius: 12;">
+                    </Button>
+                    <Button fx:id="docButton"
+                            text="View Documentation"
+                            onAction="#onDocs"
+                            onMouseEntered="#onButtonEnter"
+                            onMouseExited="#onButtonExit"
+                            style="-fx-background-color: transparent; -fx-border-color: rgba(124,58,237,0.8); -fx-border-radius: 10; -fx-text-fill: #E4E4E7; -fx-font-size: 15px; -fx-padding: 10 18;">
+                    </Button>
+                </HBox>
+
+            </VBox>
+
+            <!-- features grid -->
+            <FlowPane fx:id="featuresPane" hgap="20" vgap="20" alignment="CENTER" maxWidth="880">
+
+                <VBox style="-fx-background-color: rgba(26,27,58,0.55); -fx-border-color: rgba(140,86,255,0.18); -fx-border-width: 1; -fx-background-radius: 12; -fx-border-radius: 12; -fx-padding: 18; -fx-pref-width: 280;"
+                      onMouseEntered="#onCardEnter" onMouseExited="#onCardExit">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Region style="-fx-background-color: linear-gradient(to bottom, #7C3AED,#8B5CF6); -fx-background-radius: 999;" />
+                        <Label text="Newtonian Gravity Engine" style="-fx-text-fill: #E4E4E7; -fx-font-weight: 700; -fx-font-size: 14px;" />
+                    </HBox>
+                    <Label text="High-precision, real-time Newtonian gravity with multi-body interactions." wrapText="true" style="-fx-text-fill: #C7C7CB; -fx-padding: 10 0 0 0;" />
+                </VBox>
+
+                <VBox style="-fx-background-color: rgba(26,27,58,0.55); -fx-border-color: rgba(140,86,255,0.18); -fx-border-width: 1; -fx-background-radius: 12; -fx-border-radius: 12; -fx-padding: 18; -fx-pref-width: 280;"
+                      onMouseEntered="#onCardEnter" onMouseExited="#onCardExit">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Region style="-fx-background-color: linear-gradient(to bottom, #4C1D95,#7C3AED); -fx-background-radius: 999;" />
+                        <Label text="Interactive Planet Creation" style="-fx-text-fill: #E4E4E7; -fx-font-weight: 700; -fx-font-size: 14px;" />
+                    </HBox>
+                    <Label text="Add planets on the fly with mass, radius, color, and velocity controls." wrapText="true" style="-fx-text-fill: #C7C7CB; -fx-padding: 10 0 0 0;" />
+                </VBox>
+
+                <VBox style="-fx-background-color: rgba(26,27,58,0.55); -fx-border-color: rgba(140,86,255,0.18); -fx-border-width: 1; -fx-background-radius: 12; -fx-border-radius: 12; -fx-padding: 18; -fx-pref-width: 280;"
+                      onMouseEntered="#onCardEnter" onMouseExited="#onCardExit">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Region style="-fx-background-color: linear-gradient(to bottom, #2DA1FF,#7C3AED); -fx-background-radius: 999;" />
+                        <Label text="Time Scaling &amp; Controls" style="-fx-text-fill: #E4E4E7; -fx-font-weight: 700; -fx-font-size: 14px;" />
+                    </HBox>
+                    <Label text="Time scales: Day / Month / Year, with precise multipliers and rewinding." wrapText="true" style="-fx-text-fill: #C7C7CB; -fx-padding: 10 0 0 0;" />
+                </VBox>
+
+                <!-- second row -->
+                <VBox style="-fx-background-color: rgba(26,27,58,0.55); -fx-border-color: rgba(140,86,255,0.18); -fx-border-width: 1; -fx-background-radius: 12; -fx-border-radius: 12; -fx-padding: 18; -fx-pref-width: 280;"
+                      onMouseEntered="#onCardEnter" onMouseExited="#onCardExit">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Region style="-fx-background-color: linear-gradient(to bottom, #8B5CF6,#7C3AED); -fx-background-radius: 999;" />
+                        <Label text="CSV Import/Export" style="-fx-text-fill: #E4E4E7; -fx-font-weight: 700; -fx-font-size: 14px;" />
+                    </HBox>
+                    <Label text="Load or save planetary systems with an easy CSV format." wrapText="true" style="-fx-text-fill: #C7C7CB; -fx-padding: 10 0 0 0;" />
+                </VBox>
+
+                <VBox style="-fx-background-color: rgba(26,27,58,0.55); -fx-border-color: rgba(140,86,255,0.18); -fx-border-width: 1; -fx-background-radius: 12; -fx-border-radius: 12; -fx-padding: 18; -fx-pref-width: 280;"
+                      onMouseEntered="#onCardEnter" onMouseExited="#onCardExit">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Region style="-fx-background-color: linear-gradient(to bottom, #F97316,#7C3AED); -fx-background-radius: 999;" />
+                        <Label text="Realtime Visualization" style="-fx-text-fill: #E4E4E7; -fx-font-weight: 700; -fx-font-size: 14px;" />
+                    </HBox>
+                    <Label text="Smooth canvas rendering with trails, scaling and view controls." wrapText="true" style="-fx-text-fill: #C7C7CB; -fx-padding: 10 0 0 0;" />
+                </VBox>
+
+                <VBox style="-fx-background-color: rgba(26,27,58,0.55); -fx-border-color: rgba(140,86,255,0.18); -fx-border-width: 1; -fx-background-radius: 12; -fx-border-radius: 12; -fx-padding: 18; -fx-pref-width: 280;"
+                      onMouseEntered="#onCardEnter" onMouseExited="#onCardExit">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Region style="-fx-background-color: linear-gradient(to bottom, #06B6D4,#7C3AED); -fx-background-radius: 999;" />
+                        <Label text="Pause / Reverse / Reset" style="-fx-text-fill: #E4E4E7; -fx-font-weight: 700; -fx-font-size: 14px;" />
+                    </HBox>
+                    <Label text="Control flow of simulation: pause, rewind, and reset without restart." wrapText="true" style="-fx-text-fill: #C7C7CB; -fx-padding: 10 0 0 0;" />
+                </VBox>
+            </FlowPane>
+
+            <!-- physics + new CSV layout -->
+            <HBox spacing="20" alignment="TOP_CENTER">
+
+                <!-- physics -->
+                <VBox spacing="16"
+                      style="-fx-padding: 20;-fx-pref-width: 380;"
+                      onMouseEntered="#onCardEnter" onMouseExited="#onCardExit">
+                    
+                    <Label text="Physics &amp; Units" style="-fx-text-fill: #E4E4E7; -fx-font-weight: 700; -fx-font-size: 18px;" />
+
+                    <VBox spacing="10">
+                        <VBox spacing="4">
+                            <Label text="Gravity Equation" style="-fx-text-fill: #A78BFA; -fx-font-weight: bold; -fx-font-size: 16px;"/>
+                            <Label text="F = G * (m1*m2) / r²"
+                                   style="-fx-font-family: 'Consolas'; -fx-text-fill: #C7C7CB; -fx-font-size: 14px;"/>
+                        </VBox>
+
+                        <VBox spacing="4">
+                            <Label text="Distance Units" style="-fx-text-fill: #A78BFA; -fx-font-weight: bold; -fx-font-size: 16;"/>
+                            <Label text="1 AU = 1.496 × 10¹¹ m"
+                                   style="-fx-font-family: 'Consolas'; -fx-text-fill: #C7C7CB; -fx-font-size: 14px;"/>
+                        </VBox>
+
+                        <VBox spacing="4">
+                            <Label text="Time Units" style="-fx-text-fill: #A78BFA; -fx-font-weight: bold; -fx-font-size: 16px;"/>
+                            <Label text="Day = 86,400 s" style="-fx-font-family: 'Consolas'; -fx-text-fill: #C7C7CB; -fx-font-size: 14px;"/>
+                            <Label text="Month ≈ 2.628 × 10⁶ s" style="-fx-font-family: 'Consolas'; -fx-text-fill: #C7C7CB; -fx-font-size: 14px;"/>
+                            <Label text="Year ≈ 3.154 × 10⁷ s" style="-fx-font-family: 'Consolas'; -fx-text-fill: #C7C7CB; -fx-font-size: 14px;"/>
+                        </VBox>
+                    </VBox>
+
+                </VBox>
+
+                <!-- csv -->
+                <VBox spacing="12" style="-fx-background-color: rgba(11,15,26,0.6); -fx-background-radius: 12; -fx-padding: 20; -fx-max-width: 420;">
+                    <Label text="Planetary Body Configuration" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #E4E4E7;" />
+
+                    <GridPane hgap="14" vgap="12">
+                        <columnConstraints>
+                            <ColumnConstraints halignment="LEFT" />
+                            <ColumnConstraints hgrow="ALWAYS" />
+                        </columnConstraints>
+
+                        <Label text="radius" style="-fx-text-fill: #7C3AED; -fx-font-family: 'Consolas';" GridPane.rowIndex="0" />
+                        <Label text="(pixels) — Visual representation size" style="-fx-text-fill: #C7C7CB;" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+
+                        <Label text="mass" style="-fx-text-fill: #7C3AED; -fx-font-family: 'Consolas';" GridPane.rowIndex="1" />
+                        <Label text="(kg) — Gravitational mass of the body" style="-fx-text-fill: #C7C7CB;" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+
+                        <Label text="pos_x, pos_y" style="-fx-text-fill: #7C3AED; -fx-font-family: 'Consolas';" GridPane.rowIndex="2" />
+                        <Label text="(AU) — Position in astronomical units" style="-fx-text-fill: #C7C7CB;" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+
+                        <Label text="color" style="-fx-text-fill: #7C3AED; -fx-font-family: 'Consolas';" GridPane.rowIndex="3" />
+                        <Label text="(JavaFX Color) — Visual appearance (Color.BLUE, etc.)" style="-fx-text-fill: #C7C7CB;" GridPane.rowIndex="3" GridPane.columnIndex="1" />
+
+                        <Label text="vel_x, vel_y" style="-fx-text-fill: #7C3AED; -fx-font-family: 'Consolas';" GridPane.rowIndex="4" />
+                        <Label text="(m/s) — Initial velocity components" style="-fx-text-fill: #C7C7CB;" GridPane.rowIndex="4" GridPane.columnIndex="1" />
+                    </GridPane>
+
+                    <VBox spacing="6" style="-fx-background-color: rgba(26,27,58,0.55); -fx-background-radius: 8; -fx-padding: 12; -fx-border-color: rgba(140,86,255,0.18); -fx-border-radius: 8;">
+                        <Label text="Example CSV Row:" style="-fx-text-fill: #E4E4E7; -fx-font-size: 13px;" />
+                        <Label text="10,5.972e24,1.0,0.0,Color.BLUE,0.0,29780"
+                               style="-fx-font-family: 'Consolas'; -fx-text-fill: #C7C7CB; -fx-font-size: 12px;" />
+                    </VBox>
+                </VBox>
+            </HBox>
+
+            <!-- simulation controls -->
+            <FlowPane fx:id="simulationControlsPane" hgap="20" vgap="20" alignment="CENTER" maxWidth="880">
+
+                <VBox style="-fx-background-color: rgba(26,27,58,0.55); -fx-border-color: rgba(140,86,255,0.18); -fx-border-width: 1; -fx-background-radius: 12; -fx-border-radius: 12; -fx-padding: 18; -fx-pref-width: 280;"
+                      onMouseEntered="#onCardEnter" onMouseExited="#onCardExit">
+                    <Label text="Start/Pause" style="-fx-text-fill: #E4E4E7; -fx-font-weight: 700; -fx-font-size: 14px;" />
+                    <Label text="Toggle simulation state" wrapText="true" style="-fx-text-fill: #C7C7CB; -fx-padding: 10 0 0 0;" />
+                </VBox>
+
+                <VBox style="-fx-background-color: rgba(26,27,58,0.55); -fx-border-color: rgba(140,86,255,0.18); -fx-border-width: 1; -fx-background-radius: 12; -fx-border-radius: 12; -fx-padding: 18; -fx-pref-width: 280;"
+                      onMouseEntered="#onCardEnter" onMouseExited="#onCardExit">
+                    <Label text="Reset" style="-fx-text-fill: #E4E4E7; -fx-font-weight: 700; -fx-font-size: 14px;" />
+                    <Label text="Restore initial configuration" wrapText="true" style="-fx-text-fill: #C7C7CB; -fx-padding: 10 0 0 0;" />
+                </VBox>
+
+                <VBox style="-fx-background-color: rgba(26,27,58,0.55); -fx-border-color: rgba(140,86,255,0.18); -fx-border-width: 1; -fx-background-radius: 12; -fx-border-radius: 12; -fx-padding: 18; -fx-pref-width: 280;"
+                      onMouseEntered="#onCardEnter" onMouseExited="#onCardExit">
+                    <Label text="Reverse" style="-fx-text-fill: #E4E4E7; -fx-font-weight: 700; -fx-font-size: 14px;" />
+                    <Label text="Reverse time in simulation" wrapText="true" style="-fx-text-fill: #C7C7CB; -fx-padding: 10 0 0 0;" />
+                </VBox>
+
+                <VBox style="-fx-background-color: rgba(26,27,58,0.55); -fx-border-color: rgba(140,86,255,0.18); -fx-border-width: 1; -fx-background-radius: 12; -fx-border-radius: 12; -fx-padding: 18; -fx-pref-width: 280;"
+                      onMouseEntered="#onCardEnter" onMouseExited="#onCardExit">
+                    <Label text="Add Planet" style="-fx-text-fill: #E4E4E7; -fx-font-weight: 700; -fx-font-size: 14px;" />
+                    <Label text="Click canvas to place new bodies" wrapText="true" style="-fx-text-fill: #C7C7CB; -fx-padding: 10 0 0 0;" />
+                </VBox>
+
+                <VBox style="-fx-background-color: rgba(26,27,58,0.55); -fx-border-color: rgba(140,86,255,0.18); -fx-border-width: 1; -fx-background-radius: 12; -fx-border-radius: 12; -fx-padding: 18; -fx-pref-width: 280;"
+                      onMouseEntered="#onCardEnter" onMouseExited="#onCardExit">
+                    <Label text="Time Scale" style="-fx-text-fill: #E4E4E7; -fx-font-weight: 700; -fx-font-size: 14px;" />
+                    <Label text="Day/Month/Year time units" wrapText="true" style="-fx-text-fill: #C7C7CB; -fx-padding: 10 0 0 0;" />
+                </VBox>
+
+                <VBox style="-fx-background-color: rgba(26,27,58,0.55); -fx-border-color: rgba(140,86,255,0.18); -fx-border-width: 1; -fx-background-radius: 12; -fx-border-radius: 12; -fx-padding: 18; -fx-pref-width: 280;"
+                      onMouseEntered="#onCardEnter" onMouseExited="#onCardExit">
+                    <Label text="Speed Control" style="-fx-text-fill: #E4E4E7; -fx-font-weight: 700; -fx-font-size: 14px;" />
+                    <Label text="0.1x to 5x acceleration" wrapText="true" style="-fx-text-fill: #C7C7CB; -fx-padding: 10 0 0 0;" />
+                </VBox>
+
+            </FlowPane>
+
+
+
+            <!-- footer -->
+            <VBox alignment="CENTER" spacing="12" style="-fx-padding: 8 0 40 0;">
+                <Label text="Ready to explore or build your own planetary systems?" style="-fx-text-fill: #E4E4E7; -fx-font-size: 14px;"/>
+                <Button fx:id="startNowButton"
+                        text="Start Demo"
+                        onAction="#onLaunch"
+                        onMouseEntered="#onButtonEnter"
+                        onMouseExited="#onButtonExit"
+                        style="-fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #7C3AED 0%, #8B5CF6 100%); -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 12 26; -fx-background-radius: 12;">
+                </Button>
+            </VBox>
+        </VBox>
+    </ScrollPane>
 </StackPane>

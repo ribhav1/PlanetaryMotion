@@ -139,6 +139,7 @@ public class MainController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             Node screen = loader.load();
+
             contentArea.getChildren().setAll(screen);
 
         } catch (IOException e) {
