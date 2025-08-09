@@ -244,6 +244,10 @@ public class SimController {
     @FXML
     private void handleReverseClick() {
         reverse = -1 * reverse;
+        for (Body planet : planets)
+        {
+            planet.trail.clear();
+        }
     }
 
     private void setupPlanets() {
@@ -290,7 +294,6 @@ public class SimController {
                         }
                         planets.removeAll(planetsToRemove);
                     }
-
                 } else if (reverse == 1) {
                     // logic to restore deleted planets when at their creation time when forwarding past it
                     List<Body> restoredPlanets = new ArrayList<>();
@@ -332,6 +335,7 @@ public class SimController {
 
         for (Body planet : planets) {
             renderPlanet(centerScreen, planet, Color.BLACK);
+            renderTrail(centerScreen, planet);
         }
 
         if (inPlaceMode) {
@@ -380,6 +384,36 @@ public class SimController {
         gc.setFill(planet.color);
         gc.fillOval(x - planet.radius, y - planet.radius, planet.radius * 2, planet.radius * 2);
     }
+
+    private void renderTrail(double[] centerScreen, Body planet) {
+        List<double[]> trail = planet.trail;
+        if (trail.size() < 3) return;
+
+        for (int i = 0; i < trail.size() - 2; i++) {
+            double[] p0Sim = trail.get(i);
+            double[] p1Sim = trail.get(i + 1);
+            double[] p2Sim = trail.get(i + 2);
+
+            double[] p0 = simCoordsToScreenCoords(p0Sim, centerScreen, PIXELS_PER_UNIT);
+            double[] p1 = simCoordsToScreenCoords(p1Sim, centerScreen, PIXELS_PER_UNIT);
+            double[] p2 = simCoordsToScreenCoords(p2Sim, centerScreen, PIXELS_PER_UNIT);
+
+            double trailSize = (double) i / trail.size() * planet.radius * 0.75;
+            gc.setLineWidth(trailSize); // fade trail width
+            gc.setStroke(Color.color(
+                    planet.color.getRed(),
+                    planet.color.getGreen(),
+                    planet.color.getBlue(),
+                    (double) i / trail.size()  // fade alpha
+            ));
+
+            gc.beginPath();
+            gc.moveTo(p0[0], p0[1]);
+            gc.quadraticCurveTo(p1[0], p1[1], p2[0], p2[1]);
+            gc.stroke();
+        }
+    }
+
 
     private double[] calculateArrowInfo(double bodyX, double bodyY)
     {
