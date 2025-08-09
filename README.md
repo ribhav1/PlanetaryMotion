@@ -123,12 +123,6 @@ radius,mass,pos_x,pos_y,color,vel_x,vel_y
 
 ---
 
-## 🧩 Potential Extensions
-
-- Orbit trails
-
----
-
 ## 🧑‍💻 Contributing
 
 Pull requests are welcome! If you’d like to contribute:
