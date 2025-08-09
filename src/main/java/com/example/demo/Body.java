@@ -1,8 +1,9 @@
 package com.example.demo;
 
 import javafx.scene.paint.Color;
-import java.util.ArrayList;
 import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
 class Body {
     int radius;
@@ -12,6 +13,11 @@ class Body {
     double[] acceleration = {0.0, 0.0};
     Color color;
     double creationTime = 0.0;
+
+    public List<double[]> trail = new ArrayList<>();
+    public static double MIN_TRAIL_DIST = 0.01;
+    public static int MIN_TRAIL_SIZE = 100;
+
     String uniqueID = UUID.randomUUID().toString();
 
     double forceG = 0;
@@ -35,6 +41,18 @@ class Body {
             Body thisPlanet = planets.get(i);
             double[] force = {0.0, 0.0};
 
+            List<double[]> trail = thisPlanet.trail;
+
+            // only add a new point to tail only if the planet has moved far enough
+            if (trail.isEmpty() || Math.hypot((thisPlanet.transform[0] - trail.get(trail.size() - 1)[0]), (thisPlanet.transform[1] - trail.get(trail.size() - 1)[1])) > MIN_TRAIL_DIST) {
+                trail.add(new double[]{thisPlanet.transform[0], thisPlanet.transform[1]});
+
+                // cap trail length
+                if (trail.size() > MIN_TRAIL_SIZE) {
+                    trail.removeFirst();
+                }
+            }
+
             for (int j = 0; j < planets.size(); j++) {
                 if (i == j) continue;
                 Body otherPlanet = planets.get(j);
@@ -43,7 +61,7 @@ class Body {
                 double dy = Units.simUnitsToDistUnits(otherPlanet.transform[1] - thisPlanet.transform[1]);
                 double distance = Math.sqrt(dx * dx + dy * dy);
 
-                if (distance == 0) continue; // Avoid singularity
+                if (distance == 0) continue; // avoid singularity
 
                 double gForce = (Units.G * otherPlanet.mass * thisPlanet.mass) / (distance * distance);
                 double angle = Math.atan2(dy, dx);
