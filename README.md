@@ -9,6 +9,8 @@ A visually interactive, real-time 2D gravity simulation written in JavaFX. This 
   <img src="https://img.shields.io/badge/License-MIT-yellow" />
 </p>
 
+![WelcomePageScreenshot](/screenshots/welcome_page.png?raw=true "WelcomePageScreenshot")
+
 ---
 
 ## 🧠 Overview
