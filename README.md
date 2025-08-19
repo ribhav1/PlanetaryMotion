@@ -38,18 +38,18 @@ This simulator provides a real-time physics engine for gravitational interaction
 ## File Structure
 
 ```
-src/
-├── com.example.demo/
+src/main/
+├── java/com/example/demo
 │   ├── Application.java          # JavaFX application launcher
 │   ├── Body.java                 # Gravitational body model and physics logic
 │   ├── MainController.java       # Main UI navigation controller
 │   ├── SimController.java        # Simulation logic, canvas rendering, interactivity
 │   ├── TimeUnits.java            # Time scaling constants (day, month, year)
-│   ├── Units.java                # Distance unit conversion and constants
-├── resources/
-│   ├── main.fxml                 # Main layout (menus, navigation)
-│   ├── sim.fxml                  # Simulation layout (canvas and controls)
-│   ├── home.fxml                 # Welcome screen
+│   └── Units.java                # Distance unit conversion and constants
+└── resources/com/example/demo/
+    ├── main.fxml                 # Main layout (menus, navigation)
+    ├── sim.fxml                  # Simulation layout (canvas and controls)
+    └── home.fxml                 # Welcome screen
 ```
 
 ---
