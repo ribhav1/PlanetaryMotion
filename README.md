@@ -4,7 +4,6 @@ A visually interactive, real-time 2D gravity simulation written in JavaFX. This 
 
 <p align="center">
   <img src="https://img.shields.io/badge/Java-17+-brightgreen" />
-  <img src="https://img.shields.io/badge/JavaFX-Supported-blue" />
   <img src="https://img.shields.io/badge/Platform-Desktop-lightgrey" />
   <img src="https://img.shields.io/badge/License-MIT-yellow" />
 </p>
