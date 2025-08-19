@@ -13,7 +13,7 @@ A visually interactive, real-time 2D gravity simulation written in JavaFX. This 
 
 ---
 
-## 🧠 Overview
+## Overview
 
 This simulator provides a real-time physics engine for gravitational interaction between massive bodies. It supports:
 - Precise time scaling (days/months/years per second)
@@ -24,18 +24,18 @@ This simulator provides a real-time physics engine for gravitational interaction
 
 ---
 
-## 📦 Features
+## Features
 
-- ✅ **Newtonian Gravity Engine** – simulates force interactions using ![gravity equation](https://latex.codecogs.com/png.image?\dpi{120}F=G\frac{m_1m_2}{r^2})
-- 🎨 **JavaFX UI** – responsive layout with interactive canvas
-- 🛠️ **Dynamic Planet Creation** – add planets during simulation with user-defined attributes
-- ⏱️ **Time Control** – toggle between day/month/year time scales, and control simulation speed
-- 📄 **CSV Import Support** – load custom planetary systems from `.csv` files
-- 🔄 **Pause, Resume, Reset, Reverse** – control flow of the simulation without restarting the app
+- **Newtonian Gravity Engine** – simulates force interactions using ![gravity equation](https://latex.codecogs.com/png.image?\dpi{120}F=G\frac{m_1m_2}{r^2})
+- **JavaFX UI** – responsive layout with interactive canvas
+- **Dynamic Planet Creation** – add planets during simulation with user-defined attributes
+- **Time Control** – toggle between day/month/year time scales, and control simulation speed
+- **CSV Import Support** – load custom planetary systems from `.csv` files
+- **Pause, Resume, Reset, Reverse** – control flow of the simulation without restarting the app
 
 ---
 
-## 📁 File Structure
+## File Structure
 
 ```
 src/
@@ -54,15 +54,15 @@ src/
 
 ---
 
-## 🛠️ Installation & Usage
+## Installation & Usage
 
-### 📦 Prerequisites
+### Prerequisites
 
 - Java **17+**
 - JavaFX SDK (version compatible with your JDK)
 - IDE with JavaFX support (IntelliJ IDEA recommended)
 
-### ▶️ Run the App
+### Run the App
 
 #### Option 1: From IDE
 
@@ -78,7 +78,7 @@ src/
 
 ---
 
-## 🧪 Simulation Controls
+## Simulation Controls
 
 | Feature         | Description |
 |----------------|-------------|
@@ -92,7 +92,7 @@ src/
 
 ---
 
-## 📂 CSV File Format
+## CSV File Format
 
 You can load your own planet systems from `.csv` files. Each row represents a body:
 
@@ -113,7 +113,7 @@ radius,mass,pos_x,pos_y,color,vel_x,vel_y
 
 ---
 
-## 🧠 Physics & Units
+## Physics & Units
 
 - **Gravity Formula:** ![gravity equation](https://latex.codecogs.com/png.image?\dpi{120}F=G\frac{m_1m_2}{r^2})
 - **Distance Units:** Astronomical Units (AU) → 1 AU = `1.496e11` meters
@@ -125,7 +125,7 @@ radius,mass,pos_x,pos_y,color,vel_x,vel_y
 
 ---
 
-## 🧑‍💻 Contributing
+## Contributing
 
 Pull requests are welcome! If you’d like to contribute:
 1. Fork this repository
@@ -136,14 +136,14 @@ Pull requests are welcome! If you’d like to contribute:
 
 ---
 
-## 📜 License
+## License
 
 This project is licensed under the MIT License.  
 See the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 🙋‍♂️ Author
+## Author
 
 Created by [Ribhav Malhotra](https://github.com/your-username)
 
